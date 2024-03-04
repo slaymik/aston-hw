@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MyHashMapTest {
 
-    private MyHashMap sut;
+    private MyHashMap<Object,Object> sut;
 
     @BeforeEach
     void init() {
@@ -24,7 +24,7 @@ class MyHashMapTest {
     @Test
     void constructorWithInitialCapacity() {
         int initialCapacity = 3;
-        MyHashMap newSut = new MyHashMap<>(initialCapacity);
+        MyHashMap<Object,Object> newSut = new MyHashMap<>(initialCapacity);
 
         assertEquals(0, newSut.getSize());
         assertEquals(initialCapacity, newSut.getCapacity());
@@ -35,7 +35,7 @@ class MyHashMapTest {
     void constructorWithInitialCapacityAndLoadFactor() {
         int initialCapacity = 3;
         float loadFactor = 0.6f;
-        MyHashMap newSut = new MyHashMap<>(initialCapacity, loadFactor);
+        MyHashMap<Object,Object> newSut = new MyHashMap<>(initialCapacity, loadFactor);
 
         assertEquals(0, newSut.getSize());
         assertEquals(initialCapacity, newSut.getCapacity());
@@ -87,7 +87,7 @@ class MyHashMapTest {
 
     @Test
     void putWithResize() {
-        MyHashMap newSut = new MyHashMap<>(2);
+        MyHashMap<Object,Object> newSut = new MyHashMap<>(2);
         newSut.put(1, "One");
         newSut.put(2, "Two");
         newSut.put(3, "Three");
