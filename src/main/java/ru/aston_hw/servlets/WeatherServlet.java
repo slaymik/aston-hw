@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import ru.aston_hw.database.DatabaseConnection;
 import ru.aston_hw.utils.CountryCodeFormatter;
 import ru.aston_hw.utils.TemperatureConverter;
 
@@ -25,15 +26,19 @@ public class WeatherServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Properties properties = new Properties();
+        properties.load(getClass().getClassLoader().getResourceAsStream(CONFIG_FILE));
         String country = request.getParameter("country");
         String city = request.getParameter("city");
-        String weather = getWeather(country, city);
+        String weather = getWeather(country, city, properties);
+        DatabaseConnection databaseConnection = new DatabaseConnection(properties);
+        databaseConnection.saveWeatherData("%s, %s".formatted(city, country), weather);
         response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write("Погода в %s, %s: %s".formatted(city, country, weather));
     }
 
-    private String getWeather(String country, String city) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(buildApiUrl(country, city)).openConnection();
+    private String getWeather(String country, String city, Properties properties) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) new URL(buildApiUrl(country, city, properties)).openConnection();
         connection.setRequestMethod("GET");
         return parseApiResponse(fetchApiResponse(connection));
     }
@@ -73,9 +78,7 @@ public class WeatherServlet extends HttpServlet {
         }
     }
 
-    private String buildApiUrl(String country, String city) throws IOException {
-        Properties properties = new Properties();
-        properties.load(getClass().getClassLoader().getResourceAsStream(CONFIG_FILE));
+    private String buildApiUrl(String country, String city, Properties properties) {
         CountryCodeFormatter formatter = new CountryCodeFormatter(properties);
         String apiKey = properties.getProperty("openweathermap.api.key");
         return properties.getProperty("openweathermap.api.url")
