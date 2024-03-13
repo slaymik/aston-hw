@@ -3,6 +3,8 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 target
+.idea/inspectionProfiles
+.idea/dataSources
 
 ### Eclipse ###
 .apt_generated
@@ -30,4 +32,4 @@ bin/
 .DS_Store
 
 ### SonarLint ###
-.idea/
+.idea/sonarlint
