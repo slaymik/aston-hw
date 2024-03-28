@@ -7,6 +7,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import ru.aston_hw.repository.WeatherRepository;
 import ru.aston_hw.utils.CountryCodeFormatter;
 import ru.aston_hw.utils.TemperatureConverter;
 
@@ -28,6 +31,11 @@ public class WeatherServlet extends HttpServlet {
         String country = request.getParameter("country");
         String city = request.getParameter("city");
         String weather = getWeather(country, city);
+        SessionFactory sessionFactory = new Configuration()
+                .configure()
+                .buildSessionFactory();
+        WeatherRepository repository = new WeatherRepository(sessionFactory);
+        repository.saveWeather("%s, %s".formatted(city, country), weather);
         response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write("Погода в %s, %s: %s".formatted(city, country, weather));
     }
